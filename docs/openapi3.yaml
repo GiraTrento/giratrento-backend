@@ -45,7 +45,7 @@ components:
           type: string
         category:
           type: string
-          enum: [Riparazioni, Sfuso, Km0, Seconda Mano]
+          enum: [Riparazioni, Sfuso, Alimentari Locali, Seconda Mano, Artigianato Locale]
         location:
           type: object
           properties:
