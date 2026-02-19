@@ -71,13 +71,20 @@ exports.addProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id);
+        
+        if (!activity) {
+            return res.status(404).json({ message: 'Attività non trovata' });
+        }
+
         if (activity.owner.toString() !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Non sei il proprietario di questa attività' });
         }
+
         const product = activity.products.id(req.params.productId);
         if (!product) {
             return res.status(404).json({ message: 'Prodotto non trovato' });
         }
+
         product.set(req.body);
         await activity.save();
         res.json(activity);
@@ -90,16 +97,23 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id);
+        
+        if (!activity) {
+            return res.status(404).json({ message: 'Attività non trovata' });
+        }
+
         if (activity.owner.toString() !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Non sei il proprietario di questa attività' });
         }
+
         const product = activity.products.id(req.params.productId);
         if (!product) {
             return res.status(404).json({ message: 'Prodotto non trovato' });
         }
-        product.remove();
+
+        activity.products.pull(req.params.productId); 
         await activity.save();
-        res.json(activity);
+        res.json({ message: 'Prodotto eliminato con successo', activity });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -123,6 +137,38 @@ exports.addReview = async (req, res) => {
     
     await activity.save();
     res.json({ message: 'Recensione aggiunta' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Ottieni tutti gli ordini ricevuti da una specifica attività (Solo Proprietario o Admin)
+exports.getActivityOrders = async (req, res) => {
+    try {
+        const activity = await Activity.findById(req.params.id);
+        if (!activity) {
+            return res.status(404).json({ message: 'Attività non trovata' });
+        }
+
+        if (activity.owner.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Non sei autorizzato a vedere questi ordini' });
+        }
+
+        const orders = await Order.find({ activity: req.params.id })
+            .populate('user', 'name email') // Così il negoziante vede il NOME e l'EMAIL di chi ha ordinato!
+            .sort({ createdAt: -1 });
+
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Ottieni solo le attività di cui il merchant loggato è proprietario
+exports.getMerchantActivities = async (req, res) => {
+  try {
+    const activities = await Activity.find({ owner: req.user.id });
+    res.json(activities);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

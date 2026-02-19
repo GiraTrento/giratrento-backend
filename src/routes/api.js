@@ -19,10 +19,16 @@ router.get('/activities', activityController.getActivities); // Vede solo le app
 router.post('/activities', authMiddleware, activityController.suggestActivity);
 router.post('/activities/:id/reviews', authMiddleware, activityController.addReview);
 
+// MERCHANT DASHBOARD
+router.get('/merchant/activities', authMiddleware, isMerchant, activityController.getMerchantActivities);
+
 // PRODUCTS
 router.post('/activities/:id/products', authMiddleware, activityController.addProduct);
 router.put('/activities/:id/products/:productId', authMiddleware, activityController.updateProduct);
 router.delete('/activities/:id/products/:productId', authMiddleware, activityController.deleteProduct);
+
+// ORDERS FOR ACTIVITY
+router.get('/activities/:id/orders', authMiddleware, orderController.getActivityOrders);
 
 // ADMIN PANEL
 router.get('/admin/pending', authMiddleware, isAdmin, adminController.getPendingActivities);
