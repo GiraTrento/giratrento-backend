@@ -323,6 +323,52 @@ paths:
         '200':
           description: Attività eliminata
 
+  /admin/users:
+    get:
+      summary: Lista di tutti gli utenti registrati
+      tags: [Admin]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista utenti recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /admin/users/{id}/role:
+    put:
+      summary: Cambia il ruolo di un utente
+      tags: [Admin]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [user, merchant, admin]
+      responses:
+        '200':
+          description: Ruolo aggiornato con successo
+        '400':
+          description: Ruolo non valido o tentativo di auto-modifica
+        '404':
+          description: Utente non trovato
+
   /orders:
     get:
       summary: I miei ordini
