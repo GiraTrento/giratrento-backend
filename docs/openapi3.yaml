@@ -139,7 +139,6 @@ paths:
                 name: { type: string }
                 email: { type: string, format: email }
                 password: { type: string }
-                role: { type: string, enum: [user, merchant, admin] }
       responses:
         '201':
           description: Utente creato con successo
