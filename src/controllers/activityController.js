@@ -23,18 +23,6 @@ exports.getActivities = async (req, res) => {
   }
 };
 
-// Crea attività (Solo Admin o Merchant)
-exports.createActivity = async (req, res) => {
-  try {
-    // Nota: coordinates deve essere [longitudine, latitudine]
-    const newActivity = new Activity(req.body);
-    await newActivity.save();
-    res.status(201).json(newActivity);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 // Suggerisci attivita (Default: non approvata)
 exports.suggestActivity = async (req, res) => {
   try {
@@ -140,28 +128,6 @@ exports.addReview = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
-
-// Ottieni tutti gli ordini ricevuti da una specifica attività (Solo Proprietario o Admin)
-exports.getActivityOrders = async (req, res) => {
-    try {
-        const activity = await Activity.findById(req.params.id);
-        if (!activity) {
-            return res.status(404).json({ message: 'Attività non trovata' });
-        }
-
-        if (activity.owner.toString() !== req.user.id && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Non sei autorizzato a vedere questi ordini' });
-        }
-
-        const orders = await Order.find({ activity: req.params.id })
-            .populate('user', 'name email') // Così il negoziante vede il NOME e l'EMAIL di chi ha ordinato!
-            .sort({ createdAt: -1 });
-
-        res.json(orders);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
 };
 
 // Ottieni solo le attività di cui il merchant loggato è proprietario
