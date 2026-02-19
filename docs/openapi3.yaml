@@ -252,6 +252,59 @@ paths:
       responses:
         '200':
           description: Prodotto aggiunto
+        '403':
+          description: Non autorizzato (non owner)
+
+  /activities/{id}/products/{productId}:
+    put:
+      summary: Modifica prodotto nella vetrina (Solo Merchant/Owner)
+      tags: [Activities]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: productId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Prodotto aggiornato
+        '403':
+          description: Non autorizzato (non owner)
+        '404':
+          description: Attività o prodotto non trovato
+
+    delete:
+      summary: Rimuovi prodotto dalla vetrina (Solo Merchant/Owner)
+      tags: [Activities]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: productId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Prodotto rimosso
+        '403':
+          description: Non autorizzato (non owner)
+        '404':
+          description: Attività o prodotto non trovato
 
   /activities/{id}/reviews:
     post:

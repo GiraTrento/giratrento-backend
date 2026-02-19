@@ -67,6 +67,44 @@ exports.addProduct = async (req, res) => {
   }
 };
 
+// Modifica Prodotto in Vetrina (Solo proprietario e admin)
+exports.updateProduct = async (req, res) => {
+    try {
+        const activity = await Activity.findById(req.params.id);
+        if (activity.owner.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Non sei il proprietario di questa attività' });
+        }
+        const product = activity.products.id(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Prodotto non trovato' });
+        }
+        product.set(req.body);
+        await activity.save();
+        res.json(activity);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+// Elimina Prodotto in Vetrina (Solo proprietario e admin)
+exports.deleteProduct = async (req, res) => {
+    try {
+        const activity = await Activity.findById(req.params.id);
+        if (activity.owner.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Non sei il proprietario di questa attività' });
+        }
+        const product = activity.products.id(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Prodotto non trovato' });
+        }
+        product.remove();
+        await activity.save();
+        res.json(activity);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 // Aggiungi Recensione (Qualsiasi utente loggato)
 exports.addReview = async (req, res) => {
   try {

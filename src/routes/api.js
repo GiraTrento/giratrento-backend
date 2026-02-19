@@ -21,6 +21,8 @@ router.post('/activities/:id/reviews', authMiddleware, activityController.addRev
 
 // PRODUCTS
 router.post('/activities/:id/products', authMiddleware, activityController.addProduct);
+router.put('/activities/:id/products/:productId', authMiddleware, activityController.updateProduct);
+router.delete('/activities/:id/products/:productId', authMiddleware, activityController.deleteProduct);
 
 // ADMIN PANEL
 router.get('/admin/pending', authMiddleware, isAdmin, adminController.getPendingActivities);
