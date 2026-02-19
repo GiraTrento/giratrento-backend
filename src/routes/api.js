@@ -25,6 +25,8 @@ router.post('/activities/:id/products', authMiddleware, activityController.addPr
 // ADMIN PANEL
 router.get('/admin/pending', authMiddleware, isAdmin, adminController.getPendingActivities);
 router.put('/admin/approve/:id', authMiddleware, isAdmin, adminController.approveActivity);
+router.get('/admin/users', authMiddleware, isAdmin, adminController.getAllUsers);
+router.put('/admin/users/:id/role', authMiddleware, isAdmin, adminController.updateUserRole);
 router.delete('/admin/activity/:id', authMiddleware, isAdmin, adminController.deleteActivity);
 router.put('/admin/activity/:id', authMiddleware, isAdmin, adminController.updateActivity);
 
