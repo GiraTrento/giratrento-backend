@@ -16,7 +16,7 @@ exports.getActivities = async (req, res) => {
         }
       };
     }
-    const activities = await Activity.find(query);
+    const activities = await Activity.find(query).populate('reviews.user', 'name');
     res.json(activities);
   } catch (error) {
     res.status(500).json({ error: error.message });
