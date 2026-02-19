@@ -6,6 +6,8 @@ info:
 servers:
   - url: http://localhost:3000/api
     description: Server di Sviluppo Locale
+  - url: https://giratrento-backend.onrender.com/api
+    description: Server di deploy delle API
 
 components:
   securitySchemes:
