@@ -26,6 +26,7 @@ router.post('/activities/:id/products', authMiddleware, activityController.addPr
 router.get('/admin/pending', authMiddleware, isAdmin, adminController.getPendingActivities);
 router.put('/admin/approve/:id', authMiddleware, isAdmin, adminController.approveActivity);
 router.delete('/admin/activity/:id', authMiddleware, isAdmin, adminController.deleteActivity);
+router.put('/admin/activity/:id', authMiddleware, isAdmin, adminController.updateActivity);
 
 // ORDERS
 router.post('/orders', authMiddleware, orderController.createOrder);
