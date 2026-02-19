@@ -76,3 +76,23 @@ exports.updateUserRole = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Modifica i dati di un'attività
+exports.updateActivity = async (req, res) => {
+  try {
+    // req.body conterrà i campi corretti
+    const updatedActivity = await Activity.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedActivity) {
+      return res.status(404).json({ message: 'Attività non trovata' });
+    }
+
+    res.json({ message: 'Attività aggiornata con successo!', activity: updatedActivity });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
